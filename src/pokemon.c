@@ -1,4 +1,6 @@
 #include "global.h"
+#include "mgba.h"
+#include "printf.h"
 #include "malloc.h"
 #include "apprentice.h"
 #include "battle.h"
@@ -2239,7 +2241,9 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     SetBoxMonData(boxMon, MON_DATA_CHECKSUM, &checksum);
     EncryptBoxMon(boxMon);
     GetSpeciesName(speciesName, species);
+    mgba_printf(MGBA_LOG_DEBUG, "creating pokemon with nick: %s\n", ConvertToAscii(speciesName));
     SetBoxMonData(boxMon, MON_DATA_NICKNAME, speciesName);
+    mgba_printf(MGBA_LOG_DEBUG, "box mon nick: %s\n", ConvertToAscii(boxMon->nickname));
     SetBoxMonData(boxMon, MON_DATA_LANGUAGE, &gGameLanguage);
     SetBoxMonData(boxMon, MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
     SetBoxMonData(boxMon, MON_DATA_SPECIES, &species);

@@ -1,4 +1,7 @@
 #include "global.h"
+#include "mgba.h"
+#include "printf.h"
+#include "string_util.h"
 #include "battle.h"
 #include "battle_controllers.h"
 #include "battle_ai_main.h"
@@ -718,6 +721,8 @@ void BattleLoadAllHealthBoxesGfxAtOnce(void)
 bool8 BattleLoadAllHealthBoxesGfx(u8 state)
 {
     bool8 retVal = FALSE;
+    u8* blah = (u8*)sSpriteSheet_SinglesPlayerHealthbox.data;
+    u8* hmm;
 
     if (state != 0)
     {
@@ -732,8 +737,24 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             {
                 if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
                     LoadCompressedSpriteSheet(&sSpriteSheet_SafariHealthbox);
-                else
+                else {
+                    mgba_printf(MGBA_LOG_DEBUG, "nick location: %d\n", (int)gPlayerParty[0].box.nickname);
+                    // mgba_printf(MGBA_LOG_DEBUG, "before nick: %s\n", ConvertToAscii(gPlayerParty[0].box.nickname));
+                    hmm = (u8*)ConvertToAscii(gPlayerParty[0].box.nickname);
+                    mgba_printf(MGBA_LOG_DEBUG, "hmmmmm before loc: %x\n", hmm);
+                    mgba_printf(MGBA_LOG_DEBUG, "hmmmmm before: %x %x %x %x %x %x %x %x %x %x %x %x\n", hmm[0], hmm[1], hmm[2], hmm[3], hmm[4], hmm[5], hmm[6], hmm[7], hmm[8], hmm[9], hmm[10], hmm[11]);
+                    mgba_printf(MGBA_LOG_DEBUG, "decompression buffer loc: %d\n", gDecompressionBuffer);
+                    mgba_printf(MGBA_LOG_DEBUG, "sprite sheet data: %d %d\n", sSpriteSheet_SinglesPlayerHealthbox.size, sSpriteSheet_SinglesPlayerHealthbox.tag);
+
+                    blah = blah + 0x298;
+                    mgba_printf(MGBA_LOG_DEBUG, "sprite sheet hex: %x %x %x %x %x %x %x %x %x %x %x %x\n", blah[0], blah[1], blah[2], blah[3], blah[4], blah[5], blah[6], blah[7], blah[8], blah[9], blah[10], blah[11]);
+
+                    blah = (u8*)gPlayerParty[0].box.nickname;
+                    mgba_printf(MGBA_LOG_DEBUG, "before decompress: gDecompressionBuffer: %x %x %x %x %x %x %x %x %x %x %x %x\n", blah[0], blah[1], blah[2], blah[3], blah[4], blah[5], blah[6], blah[7], blah[8], blah[9], blah[10], blah[11]);
+
                     LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
+                    mgba_printf(MGBA_LOG_DEBUG, "after nick: %s\n", ConvertToAscii(gPlayerParty[0].box.nickname));
+                }
             }
             else if (state == 3)
                 LoadCompressedSpriteSheet(&sSpriteSheet_SinglesOpponentHealthbox);
@@ -808,6 +829,8 @@ bool8 BattleInitAllSprites(u8 *state1, u8 *battlerId)
 {
     bool8 retVal = FALSE;
 
+    mgba_printf(MGBA_LOG_DEBUG, "battle init all sprites, state: %d, battler: %d\n", *state1, *battlerId);
+
     switch (*state1)
     {
     case 0:
@@ -858,7 +881,7 @@ bool8 BattleInitAllSprites(u8 *state1, u8 *battlerId)
         }
         else
         {
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &gEnemyParty[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &gPlayerParty[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
         }
         SetHealthboxSpriteInvisible(gHealthboxSpriteIds[*battlerId]);
         (*battlerId)++;
@@ -926,7 +949,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
         position = GetBattlerPosition(battlerAtk);
 
         if (GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
-            targetSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
+            targetSpecies = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
         else
             targetSpecies = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
 
@@ -942,8 +965,8 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
         }
         else
         {
-            personalityValue = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
-            otId = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
+            personalityValue = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
+            otId = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
 
             HandleLoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[targetSpecies],
                                                       gMonSpritesGfxPtr->sprites.ptr[position],
@@ -1030,7 +1053,7 @@ void BattleLoadSubstituteOrMonSpriteGfx(u8 battlerId, bool8 loadMonSprite)
         if (!IsContest())
         {
             if (GetBattlerSide(battlerId) != B_SIDE_PLAYER)
-                BattleLoadOpponentMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battlerId]], battlerId);
+                BattleLoadOpponentMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battlerId]], battlerId);
             else
                 BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battlerId]], battlerId);
         }

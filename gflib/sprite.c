@@ -3,8 +3,10 @@
 #include "main.h"
 #include "palette.h"
 
+#include "decompress.h"
 #include "printf.h"
 #include "mgba.h"
+#include "string_util.h"
 
 #define MAX_SPRITE_COPY_REQUESTS 64
 
@@ -1500,7 +1502,24 @@ void SetOamMatrixRotationScaling(u8 matrixNum, s16 xScale, s16 yScale, u16 rotat
 
 u16 LoadSpriteSheet(const struct SpriteSheet *sheet)
 {
-    s16 tileStart = AllocSpriteTiles(sheet->size / TILE_SIZE_4BPP);
+    s16 tileStart;
+    u8* blah = (u8*)gPlayerParty[0].box.nickname;
+    u8* hmm;
+    mgba_printf(MGBA_LOG_DEBUG, "after decompress: gDecompressionBuffer: %x %x %x %x %x %x %x %x %x %x %x %x\n", blah[0], blah[1], blah[2], blah[3], blah[4], blah[5], blah[6], blah[7], blah[8], blah[9], blah[10], blah[11]);
+
+
+    mgba_printf(MGBA_LOG_DEBUG, "normal sheet data: %d %d\n", sheet->size, sheet->tag);
+
+    mgba_printf(MGBA_LOG_DEBUG, "after nick location: %d\n", (int)gPlayerParty[0].box.nickname);
+    mgba_printf(MGBA_LOG_DEBUG, "before2 decompress: gDecompressionBuffer: %x %x %x %x %x %x %x %x %x %x %x %x\n", blah[0], blah[1], blah[2], blah[3], blah[4], blah[5], blah[6], blah[7], blah[8], blah[9], blah[10], blah[11]);
+    hmm = (u8*)ConvertToAscii(gPlayerParty[0].box.nickname);
+    mgba_printf(MGBA_LOG_DEBUG, "hmmmmm loc: %x\n", hmm);
+    mgba_printf(MGBA_LOG_DEBUG, "hmmmmm: %x %x %x %x %x %x %x %x %x %x %x %x\n", hmm[0], hmm[1], hmm[2], hmm[3], hmm[4], hmm[5], hmm[6], hmm[7], hmm[8], hmm[9], hmm[10], hmm[11]);
+
+    // mgba_printf(MGBA_LOG_DEBUG, "before2 nick: %s\n", ConvertToAscii(gPlayerParty[0].box.nickname));
+
+    tileStart = AllocSpriteTiles(sheet->size / TILE_SIZE_4BPP);
+    mgba_printf(MGBA_LOG_DEBUG, "tile start: %d\n", OBJ_VRAM0 + TILE_SIZE_4BPP * tileStart);
 
     if (tileStart < 0)
     {
@@ -1510,6 +1529,7 @@ u16 LoadSpriteSheet(const struct SpriteSheet *sheet)
     {
         AllocSpriteTileRange(sheet->tag, (u16)tileStart, sheet->size / TILE_SIZE_4BPP);
         CpuCopy16(sheet->data, (u8 *)OBJ_VRAM0 + TILE_SIZE_4BPP * tileStart, sheet->size);
+        mgba_printf(MGBA_LOG_DEBUG, "after2 nick: %s\n", ConvertToAscii(gPlayerParty[0].box.nickname));
         return (u16)tileStart;
     }
 }

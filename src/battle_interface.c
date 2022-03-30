@@ -1,4 +1,6 @@
 #include "global.h"
+#include "mgba.h"
+#include "printf.h"
 #include "malloc.h"
 #include "battle.h"
 #include "pokemon.h"
@@ -2280,6 +2282,9 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
 
     gender = GetMonGender(mon);
     species = GetMonData(mon, MON_DATA_SPECIES);
+    // mgba_printf(MGBA_LOG_DEBUG, "Nick: %s\n", ConvertToAscii(nickname));
+    // mgba_printf(MGBA_LOG_DEBUG, "Gender: %d\n", gender);
+    // mgba_printf(MGBA_LOG_DEBUG, "Species: %d\n", species);
 
     if ((species == SPECIES_NIDORAN_F || species == SPECIES_NIDORAN_M) && StringCompare(nickname, gSpeciesNames[species]) == 0)
         gender = 100;
@@ -2518,6 +2523,9 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
 {
     s32 maxHp, currHp;
     u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
+    mgba_printf(MGBA_LOG_DEBUG, "Nick: %s\n", ConvertToAscii(mon->box.nickname));
+    mgba_printf(MGBA_LOG_DEBUG, "Stats: %d %d %d %d %d %d\n", mon->hp, mon->attack, mon->defense, mon->spAttack, mon->spDefense, mon->speed);
 
     if (GetBattlerSide(gSprites[healthboxSpriteId].hMain_Battler) == B_SIDE_PLAYER)
     {

@@ -1,4 +1,7 @@
 #include "global.h"
+#include "mgba.h"
+#include "printf.h"
+#include "string_util.h"
 #include "battle.h"
 #include "battle_ai_main.h"
 #include "battle_anim.h"
@@ -66,6 +69,7 @@ void SetUpBattleVarsAndBirchZigzagoon(void)
     {
         ZeroEnemyPartyMons();
         CreateMon(&gEnemyParty[0], SPECIES_ZIGZAGOON, 2, USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
+        mgba_printf(MGBA_LOG_DEBUG, "blah nick: %s\n", ConvertToAscii(gEnemyParty[0].box.nickname));
         i = 0;
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &i);
     }

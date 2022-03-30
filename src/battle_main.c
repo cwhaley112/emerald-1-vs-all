@@ -1,4 +1,7 @@
 #include "global.h"
+#include "printf.h"
+#include "mgba.h"
+
 #include "battle.h"
 #include "battle_anim.h"
 #include "battle_ai_main.h"
@@ -546,11 +549,18 @@ static void CB2_InitBattleInternal(void)
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         gBattleTerrain = BATTLE_TERRAIN_BUILDING;
 
+
     InitBattleBgsVideo();
     LoadBattleTextboxAndBackground();
+    mgba_printf(MGBA_LOG_DEBUG, "wtf\n");
+// BattleLoadAllHealthBoxesGfx(2);
+// while (1) {}
+
+
     ResetSpriteData();
     ResetTasks();
     DrawBattleEntryBackground();
+// before this
     FreeAllSpritePalettes();
     gReservedSpritePaletteCount = 6;
     SetVBlankCallback(VBlankCB_Battle);
@@ -829,6 +839,7 @@ static void CB2_HandleStartBattle(void)
     u8 playerMultiplayerId;
     u8 enemyMultiplayerId;
 
+    mgba_printf(MGBA_LOG_DEBUG, "state: %d, hmm3 nick: %s\n", gBattleCommunication[MULTIUSE_STATE], ConvertToAscii(gEnemyParty[0].box.nickname));
     RunTasks();
     AnimateSprites();
     BuildOamBuffer();
@@ -840,8 +851,10 @@ static void CB2_HandleStartBattle(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
+
         if (!IsDma3ManagerBusyWithBgCopy())
         {
+
             ShowBg(0);
             ShowBg(1);
             ShowBg(2);
@@ -851,6 +864,7 @@ static void CB2_HandleStartBattle(void)
         }
         if (gWirelessCommType)
             LoadWirelessStatusIndicatorSpriteGfx();
+
         break;
     case 1:
         if (gBattleTypeFlags & BATTLE_TYPE_LINK)
@@ -885,6 +899,7 @@ static void CB2_HandleStartBattle(void)
             gBattleCommunication[MULTIUSE_STATE] = 15;
             SetAllPlayersBerryData();
         }
+
         break;
     case 2:
         if ((GetBlockReceivedStatus() & 3) == 3)
@@ -905,6 +920,7 @@ static void CB2_HandleStartBattle(void)
             SetDeoxysStats();
             gBattleCommunication[MULTIUSE_STATE]++;
         }
+
         break;
     case 3:
         // Link battle, send/receive party Pokémon 2 at a time
@@ -966,7 +982,9 @@ static void CB2_HandleStartBattle(void)
         }
         break;
     case 15:
+
         InitBattleControllers();
+
         RecordedBattle_SetTrainerInfo();
         gBattleCommunication[SPRITES_INIT_STATE1] = 0;
         gBattleCommunication[SPRITES_INIT_STATE2] = 0;
@@ -3272,6 +3290,8 @@ static void DoBattleIntro(void)
     s32 i;
     u8 *state = &gBattleStruct->introState;
 
+    // mgba_printf(MGBA_LOG_DEBUG, "Do battle intro %d\n", *state);
+
     switch (*state)
     {
     case 0: // Get Data of all battlers.
@@ -3453,6 +3473,8 @@ static void DoBattleIntro(void)
         }
         break;
     case 8: // wait for intro message to be printed
+        // mgba_printf(MGBA_LOG_DEBUG, "Case 8: %d\n", IsBattlerMarkedForControllerExec(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)));
+
         if (!IsBattlerMarkedForControllerExec(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)))
         {
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3480,6 +3502,7 @@ static void DoBattleIntro(void)
             (*state)++;
         break;
     case 11: // first opponent's mon send out animation
+
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK && !(gBattleTypeFlags & BATTLE_TYPE_RECORDED_IS_MASTER))
             gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
         else
@@ -3492,6 +3515,7 @@ static void DoBattleIntro(void)
     case 12: // nothing
         (*state)++;
     case 13: // second opponent's mon send out
+
         if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_TWO_OPPONENTS) && !BATTLE_TWO_VS_ONE_OPPONENT)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK && !(gBattleTypeFlags & BATTLE_TYPE_RECORDED_IS_MASTER))
@@ -3600,6 +3624,8 @@ static void DoBattleIntro(void)
 static void TryDoEventsBeforeFirstTurn(void)
 {
     s32 i, j;
+
+    // mgba_printf(MGBA_LOG_DEBUG, "Start events before first turn\n");
 
     if (gBattleControllerExecFlags)
         return;

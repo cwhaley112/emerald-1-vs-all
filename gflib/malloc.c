@@ -48,6 +48,7 @@ void *AllocInternal(void *heapStart, u32 size)
     struct MemBlock *splitBlock;
     u32 foundBlockSize;
 
+
     // Alignment
     if (size & 3)
         size = 4 * ((size / 4) + 1);
