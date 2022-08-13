@@ -9,8 +9,8 @@ extern const u32 battlerTickSpeedTable[];
 
 u8 GetBattlerWithLowestTicks(void);
 u32 CalculateAddedTicks(u8 battlerId, u8 moveSpeed);
-void CreateAllBattleOrderMonIconSprites(void);
-void UpdateBattleOrderMonIconSprites(void);
-void FreeBattleOrderMonIconSprites(void);
+// void CreateAllBattleOrderMonIconSprites(void);
+// void UpdateBattleOrderMonIconSprites(void);
+// void FreeBattleOrderMonIconSprites(void);
 
 #endif // GUARD_BATTLE_ORDER_H

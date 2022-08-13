@@ -218,22 +218,6 @@ u8 CreateBattleMonTurnIcon(u16 species, u32 personality, bool32 handleDeoxys, s1
     return CreateSpriteFromData(image, oam, paletteTag, x, y, subpriority);
 }
 
-u8 CreateBattleOrderMonIconSprite(u8 battlerId, s16 x, s16 y)
-{
-    struct SpeciesData speciesData = getSpeciesData(gBattleMons[battlerId]);
-
-    u8 spriteId = CreateBattleMonTurnIcon(
-        speciesData.species,
-        speciesData.personality,
-        speciesData.handleDeoxys,
-        x,
-        y,
-        4
-    );
-
-    return spriteId;
-}
-
 u8 CreateBattleIconBgSprite(u8 battlerSide, s16 x, s16 y)
 {
     void *image = (void*) battleIconBg_Gfx;
@@ -241,79 +225,4 @@ u8 CreateBattleIconBgSprite(u8 battlerSide, s16 x, s16 y)
     u16 paletteTag = BATTLE_ICON_BG_PALETTE_TAG + battlerSide;
 
     return CreateSpriteFromData(image, oam, paletteTag, x, y, 5);
-}
-
-void UpdateBattleOrderMonIconSprite(u8 spriteId, u8 bgSpriteId, u8 battlerId, struct SpeciesData oldSpeciesData)
-{
-    void *image;
-    struct Sprite *sprite, *bgSprite;
-    struct SpeciesData speciesData = getSpeciesData(gBattleMons[battlerId]);
-
-    if (
-        speciesData.species != oldSpeciesData.species
-        || speciesData.personality != oldSpeciesData.personality
-        || speciesData.handleDeoxys != oldSpeciesData.handleDeoxys
-    )
-    {
-        image = (void*) GetMonBattleIconPtr(
-            speciesData.species,
-            speciesData.personality,
-            speciesData.handleDeoxys
-        );
-        sprite = &gSprites[spriteId];
-        sprite->images = (const struct SpriteFrameImage *)image;
-        sprite->oam.paletteNum = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + gMonIconPaletteIndices[speciesData.species]);
-        RedrawSprite(sprite);
-
-        bgSprite = &gSprites[bgSpriteId];
-        bgSprite->oam.paletteNum = IndexOfSpritePaletteTag(BATTLE_ICON_BG_PALETTE_TAG + GET_BATTLER_SIDE2(battlerId));
-        RedrawSprite(bgSprite);
-    }
-}
-
-void CreateAllBattleOrderMonIconSprites()
-{
-    u8 i, battlerId;
-    s16 battleIcon_x, battleIcon_y;
-
-    CalculateBattleOrder();
-
-    LoadMonIconPalettes();
-
-    for (i = 0; i < MAX_BATTLERS_ORDER_COUNT; i++)
-    {
-        battlerId = gBattlerTurnOrder[i];
-        battleIcon_x = 232;
-        battleIcon_y = 8 + 16 * i;
-        gSpriteTurnOrder[i] = CreateBattleOrderMonIconSprite(battlerId, battleIcon_x, battleIcon_y);
-        gBgTurnOrder[i] = CreateBattleIconBgSprite(GET_BATTLER_SIDE2(battlerId), battleIcon_x, battleIcon_y);
-        gSpeciesTurnOrder[i] = getSpeciesData(gBattleMons[battlerId]);
-    }
-}
-
-void UpdateBattleOrderMonIconSprites()
-{
-    u8 i, battlerId;
-
-    CalculateBattleOrder();
-
-    for (i = 0; i < MAX_BATTLERS_ORDER_COUNT; i++)
-    {
-        battlerId = gBattlerTurnOrder[i];
-        UpdateBattleOrderMonIconSprite(gSpriteTurnOrder[i], gBgTurnOrder[i], battlerId, gSpeciesTurnOrder[i]);
-        gSpeciesTurnOrder[i] = getSpeciesData(gBattleMons[battlerId]);
-    }
-}
-
-void FreeBattleOrderMonIconSprites()
-{
-    u8 i;
-
-    FreeMonIconPalettes();
-
-    for (i = 0; i < MAX_BATTLERS_ORDER_COUNT; i++)
-    {
-        FreeAndDestroyMonIconSprite(&gSprites[gSpriteTurnOrder[i]]);
-        FreeAndDestroyMonIconSprite(&gSprites[gBgTurnOrder[i]]);
-    }
 }

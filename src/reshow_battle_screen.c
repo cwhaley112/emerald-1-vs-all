@@ -184,7 +184,7 @@ static void CB2_ReshowBattleScreenAfterMenu(void)
         }
         break;
     case 26:
-        CreateAllBattleOrderMonIconSprites();
+        // CreateAllBattleOrderMonIconSprites();
         break;
     default:
         SetVBlankCallback(VBlankCB_Battle);

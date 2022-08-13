@@ -4134,7 +4134,7 @@ static void HandleTurnActionSelectionState(void)
     bool8 battlerConfirmedAction;
     u8 position;
 
-    UpdateBattleOrderMonIconSprites();
+    // UpdateBattleOrderMonIconSprites();
 
     battlerConfirmedAction = 0;
     gActiveBattler = gCurrentBattler = GetBattlerWithLowestTicks();
@@ -5084,7 +5084,7 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
     }
 
     FreeAllWindowBuffers();
-    FreeBattleOrderMonIconSprites();
+    // FreeBattleOrderMonIconSprites();
     if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
         FreeMonSpritesGfx();

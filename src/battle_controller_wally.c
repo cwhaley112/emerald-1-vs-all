@@ -327,7 +327,7 @@ static void Intro_WaitForShinyAnimAndHealthbox(void)
     if (healthboxAnimDone && gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].finishedShinyMonAnim
         && gBattleSpritesDataPtr->healthBoxesData[gActiveBattler ^ BIT_FLANK].finishedShinyMonAnim)
     {
-        CreateAllBattleOrderMonIconSprites();
+        // CreateAllBattleOrderMonIconSprites();
 
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].triedShinyMonAnim = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].finishedShinyMonAnim = FALSE;
