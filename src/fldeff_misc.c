@@ -544,7 +544,7 @@ static void AdjustSecretPowerSpritePixelOffsets(void)
     }
 }
 
-bool8 SetUpFieldMove_SecretPower(void)
+bool8 SetUpFieldMOVE_SECRET_POWER(void)
 {
     u8 mb;
 

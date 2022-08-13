@@ -334,8 +334,8 @@ static bool8 IsValidTarget(u8 target)
     if (IS_BATTLER_INVALID_OR_ABSENT(target))
         return FALSE;
 
-    if (!TargetValidIfOppositePosition(target, gActiveBattler))
-        return FALSE;
+    // if (!TargetValidIfOppositePosition(target, gActiveBattler))
+    //     return FALSE;
 
     switch (GetBattlerPosition(target))
     {

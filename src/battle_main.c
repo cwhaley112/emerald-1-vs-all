@@ -236,6 +236,8 @@ EWRAM_DATA u8 gActionSelectionCursor[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u8 gMoveSelectionCursor[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u8 gBattlerStatusSummaryTaskId[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u8 gBattlerInMenuId = 0;
+EWRAM_DATA u8 gPlayerMonsCount = 0;
+EWRAM_DATA u8 gEnemyMonsCount = 0;
 EWRAM_DATA bool8 gDoingBattleAnim = FALSE;
 EWRAM_DATA u32 gTransformedPersonalities[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u8 gPlayerDpadHoldFrames = 0;
@@ -697,6 +699,12 @@ static void CB2_InitBattleInternal(void)
             CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
         SetWildMonHeldItem();
     }
+
+    gEnemyMonsCount = CalculateEnemyPartyCount();
+    if (gEnemyPartyCount==2)
+            gBattleTypeFlags |= BATTLE_TYPE_DOUBLE;
+        else if (gEnemyPartyCount>2)
+            gBattleTypeFlags |= BATTLE_TYPE_TRIPLE;
 
     gMain.inBattle = TRUE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
@@ -2063,11 +2071,6 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
             }
             }
         }
-
-        if (gTrainers[trainerNum].battleType == TYPE_DOUBLE_BATTLE)
-            gBattleTypeFlags |= BATTLE_TYPE_DOUBLE;
-        else if (gTrainers[trainerNum].battleType == TYPE_TRIPLE_BATTLE)
-            gBattleTypeFlags |= BATTLE_TYPE_TRIPLE;
     }
 
     return gTrainers[trainerNum].partySize;
@@ -3396,7 +3399,6 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
 
     if (gBattleControllerExecFlags)
         return;
-
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
     {
         if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI)
@@ -4824,7 +4826,7 @@ static void CheckFocusPunch_ClearVarsBeforeTurnStarts(void)
         {
             gActiveBattler = gBattlerAttacker = gBattleStruct->focusPunchBattlerId;
             gBattleStruct->focusPunchBattlerId++;
-            if (gChosenMoveByBattler[gActiveBattler] == MOVE_FOCUSPUNCH
+            if (gChosenMoveByBattler[gActiveBattler] == MOVE_FOCUS_PUNCH
                 && !(gBattleMons[gActiveBattler].status1 & STATUS1_SLEEP)
                 && !(gDisableStructs[gBattlerAttacker].truantCounter)
                 && !(gProtectStructs[gActiveBattler].noValidMoves))
