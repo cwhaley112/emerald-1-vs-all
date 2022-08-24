@@ -2076,12 +2076,12 @@ static u8 * GetBattlerSendoutStringPtr(bool8 isPlayer)
     }
     if (numBattlers == 2)
     {
-        if (isPlayer) return (u8*)sText_GoTwoPkmn;
+        if (isPlayer) return (u8*)sText_GoPkmn;
         return (u8*)sText_Trainer1SentOutTwoPkmn;
     }
     if (numBattlers == 3)
     {
-        if (isPlayer) return (u8*)sText_GoThreePkmn;
+        if (isPlayer) return (u8*)sText_GoPkmn;
         return (u8*)sText_Trainer1SentOutThreePkmn;
     }
     return (u8*)sText_GoError;

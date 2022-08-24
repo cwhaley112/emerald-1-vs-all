@@ -919,8 +919,10 @@ void CreateHealthboxSprite(u8 battler)
         }
         else if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
         {
-            if (gBattlerPartyIndexes[battler] == PARTY_SIZE || GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
-                SetHealthboxSpriteInvisible(healthboxSpriteId);
+            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0 ||
+                GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT ||
+                GetBattlerPosition(battler) == B_POSITION_PLAYER_MIDDLE)
+                    SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
     }
 }

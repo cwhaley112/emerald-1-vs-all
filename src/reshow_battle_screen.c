@@ -225,8 +225,10 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
             DecompressTrainerBackPic(gSaveBlock2Ptr->playerGender, battler);
         else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL && battler == B_POSITION_PLAYER_LEFT) // Should be checking position, not battler.
             DecompressTrainerBackPic(TRAINER_BACK_PIC_WALLY, battler);
-        else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
-            BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+        else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute) {
+            if (GetBattlerPosition(battler) != B_POSITION_PLAYER_MIDDLE && GetBattlerPosition(battler) != B_POSITION_PLAYER_RIGHT)
+                BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+        }
         else
             BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
 
@@ -285,6 +287,8 @@ static void CreateBattlerSprite(u8 battler)
         else
         {
             if (gBattlerPartyIndexes[battler] == PARTY_SIZE || GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+                return;
+            if (GetBattlerPosition(battler) == B_POSITION_PLAYER_MIDDLE || GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT)
                 return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));

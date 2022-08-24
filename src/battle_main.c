@@ -69,6 +69,7 @@ static void CB2_InitBattleInternal(void);
 static void CB2_PreInitMultiBattle(void);
 static void CB2_PreInitIngamePlayerPartnerBattle(void);
 static void CB2_HandleStartMultiPartnerBattle(void);
+static u8 CountUsableMons(void);
 static void CB2_HandleStartMultiBattle(void);
 static void CB2_HandleStartBattle(void);
 static void TryCorrectShedinjaLanguage(struct Pokemon *mon);
@@ -712,7 +713,26 @@ static void CB2_InitBattleInternal(void)
     for (i = 0; i < PARTY_SIZE; i++)
         AdjustFriendship(&gPlayerParty[i], FRIENDSHIP_EVENT_LEAGUE_BATTLE);
 
+    // Store number of player mons
+    gPlayerMonsCount = CountUsableMons();
     gBattleCommunication[MULTIUSE_STATE] = 0;
+}
+
+static u8 CountUsableMons(void)
+{
+    s32 i;
+    u8 aliveCount = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) != SPECIES_NONE &&
+            GetMonData(&gPlayerParty[i], MON_DATA_SPECIES2, NULL) != SPECIES_EGG &&
+            GetMonData(&gPlayerParty[i], MON_DATA_HP, NULL) != 0)
+        {
+            aliveCount++;
+        }
+    }
+    return aliveCount;
 }
 
 #define BUFFER_PARTY_VS_SCREEN_STATUS(party, flags, i)              \
@@ -3416,6 +3436,14 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
             for (i = 0; i < sizeof(struct BattlePokemon); i++)
                 ptr[i] = gBattleBufferB[gActiveBattler][4 + i];
 
+            // If player has only 1 mon, clear data for second player mon.
+            if (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT &&
+                gPlayerMonsCount == 1)
+            {
+                for (i = 0; i < sizeof(struct BattlePokemon); i++)
+                    ptr[i] = 0;
+            }
+
             gBattleMons[gActiveBattler].type1 = gBaseStats[gBattleMons[gActiveBattler].species].type1;
             gBattleMons[gActiveBattler].type2 = gBaseStats[gBattleMons[gActiveBattler].species].type2;
             gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
@@ -3434,6 +3462,9 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
+            // Mark the player's second mon as absent.
+            gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_RIGHT];
+            gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_MIDDLE]; // eventually get rid of this
             if (GetBattlerPosition(gActiveBattler) == B_POSITION_OPPONENT_LEFT)
             {
                 BtlController_EmitDrawTrainerPic(BUFFER_A);
@@ -4134,7 +4165,6 @@ static void HandleTurnActionSelectionState(void)
     bool8 battlerConfirmedAction;
     u8 position;
 
-    // UpdateBattleOrderMonIconSprites();
 
     battlerConfirmedAction = 0;
     gActiveBattler = gCurrentBattler = GetBattlerWithLowestTicks();
@@ -5084,7 +5114,6 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
     }
 
     FreeAllWindowBuffers();
-    // FreeBattleOrderMonIconSprites();
     if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
         FreeMonSpritesGfx();

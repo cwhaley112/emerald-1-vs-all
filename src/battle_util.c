@@ -965,12 +965,18 @@ void PrepareStringBattle(u16 stringId, u8 battler)
 void ResetSentPokesToOpponentValue(void)
 {
     s32 i;
+    u8 numBattlers;
     u32 bits = 0;
 
     gSentPokesToOpponent[0] = 0;
     gSentPokesToOpponent[1] = 0;
 
-    for (i = 0; i < gBattlersCount; i += 2)
+    // for (i = 0; i < gBattlersCount; i += 2)
+    numBattlers = gBattlersCount;
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) numBattlers=2;
+    else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
+
+    for (i=0; i < numBattlers; i+=2)
         bits |= gBitTable[gBattlerPartyIndexes[i]];
 
     for (i = 1; i < gBattlersCount; i += 2)
@@ -980,14 +986,19 @@ void ResetSentPokesToOpponentValue(void)
 void OpponentSwitchInResetSentPokesToOpponentValue(u8 battler)
 {
     s32 i = 0;
+    u8 numBattlers;
     u32 bits = 0;
+
+    numBattlers = gBattlersCount;
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) numBattlers=2;
+    else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
 
     if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
     {
         u8 flank = ((battler & BIT_FLANK) >> 1);
         gSentPokesToOpponent[flank] = 0;
 
-        for (i = 0; i < gBattlersCount; i += 2)
+        for (i = 0; i < numBattlers; i += 2)
         {
             if (!(gAbsentBattlerFlags & gBitTable[i]))
                 bits |= gBitTable[gBattlerPartyIndexes[i]];
@@ -2337,6 +2348,9 @@ bool8 HasNoMonsToSwitch(u8 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2)
 
     if (!(gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TRIPLE)))
         return FALSE;
+
+    if (GetBattlerPosition(battler) == B_POSITION_PLAYER_MIDDLE || GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT)
+        return TRUE;
 
     if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
     {

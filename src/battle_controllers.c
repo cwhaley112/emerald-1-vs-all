@@ -669,6 +669,11 @@ static void SetBattlePartyIds(void)
             gBattlerPartyIndexes[i] = res;
         }
 
+        // If player has one mon, make party index invalid
+        if (gPlayerMonsCount == 1) {
+            gBattlerPartyIndexes[B_POSITION_PLAYER_RIGHT] = 1;
+        }
+
         if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
             gBattlerPartyIndexes[1] = 0, gBattlerPartyIndexes[3] = 3;
     }
