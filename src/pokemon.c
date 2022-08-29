@@ -4942,19 +4942,21 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                             }
                             if (gMain.inBattle)
                             {
-                                if (battlerId != MAX_BATTLERS_COUNT)
-                                {
-                                    gAbsentBattlerFlags &= ~gBitTable[battlerId];
-                                    CopyPlayerPartyMonToBattleData(battlerId, GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[battlerId]));
-                                    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && gBattleResults.numRevivesUsed < 255)
-                                        gBattleResults.numRevivesUsed++;
-                                }
-                                else
-                                {
-                                    gAbsentBattlerFlags &= ~gBitTable[gActiveBattler ^ 2];
-                                    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && gBattleResults.numRevivesUsed < 255)
-                                        gBattleResults.numRevivesUsed++;
-                                }
+                                // if (battlerId != MAX_BATTLERS_COUNT)
+                                // {
+                                //     gAbsentBattlerFlags &= ~gBitTable[battlerId];
+                                //     CopyPlayerPartyMonToBattleData(battlerId, GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[battlerId]));
+                                //     if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && gBattleResults.numRevivesUsed < 255)
+                                //         gBattleResults.numRevivesUsed++;
+                                // }
+                                // else
+                                // {
+                                //     gAbsentBattlerFlags &= ~gBitTable[gActiveBattler ^ 2];
+                                //     if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && gBattleResults.numRevivesUsed < 255)
+                                //         gBattleResults.numRevivesUsed++;
+                                // }
+                                if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && gBattleResults.numRevivesUsed < 255)
+                                    gBattleResults.numRevivesUsed++;
                             }
                         }
                         else

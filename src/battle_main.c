@@ -3462,9 +3462,10 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
-            // Mark the player's second mon as absent.
-            gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_RIGHT];
-            gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_MIDDLE]; // eventually get rid of this
+            if (DoubleBattleNonMulti() || IsTripleBattle()) {
+                gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_MIDDLE];
+                gAbsentBattlerFlags |= gBitTable[B_POSITION_PLAYER_RIGHT];
+            }
             if (GetBattlerPosition(gActiveBattler) == B_POSITION_OPPONENT_LEFT)
             {
                 BtlController_EmitDrawTrainerPic(BUFFER_A);

@@ -5740,7 +5740,8 @@ static bool8 TrySwitchInPokemon(void)
     {
         if (GetBattlerSide(i) == B_SIDE_PLAYER && GetPartyIdFromBattleSlot(slot) == gBattlerPartyIndexes[i])
         {
-            if ((GetBattlerPosition(i) != B_POSITION_PLAYER_MIDDLE) && (GetBattlerPosition(i) != B_POSITION_PLAYER_RIGHT)) {
+            if ((GetBattlerPosition(i) != B_POSITION_PLAYER_MIDDLE) && (GetBattlerPosition(i) != B_POSITION_PLAYER_RIGHT) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI)) 
+            {
                 GetMonNickname(&gPlayerParty[slot], gStringVar1);
                 StringExpandPlaceholders(gStringVar4, gText_PkmnAlreadyInBattle);
                 return FALSE;

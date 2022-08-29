@@ -90,6 +90,7 @@ bool8 HasNoMonsToSwitch(u8 battlerId, u8 r1, u8 r2);
 u8 CastformDataTypeChange(u8 battlerId);
 u8 AbilityBattleEffects(u8 caseID, u8 battlerId, u8 ability, u8 special, u16 moveArg);
 void BattleScriptExecute(const u8* BS_ptr);
+bool8 DoubleBattleNonMulti(void);
 void BattleScriptPushCursorAndCallback(const u8* BS_ptr);
 u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn);
 void ClearFuryCutterDestinyBondGrudge(u8 battlerId);
