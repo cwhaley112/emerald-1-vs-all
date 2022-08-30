@@ -346,7 +346,7 @@ static bool8 IsValidTarget(u8 target)
             if (!IsOppositePosition(target, gActiveBattler))
             {
                 if (gActiveBattler != target)
-                    return TRUE;
+                    return FALSE;
                 else if (gBattleMoves[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
                     return TRUE;
             }
@@ -368,9 +368,9 @@ static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir)
     nextTarget = currentTarget;
     do
     {
-        currSelIdentity = GetBattlerPosition(nextTarget);
+        currSelIdentity = GetBattlerPosition(nextTarget); // usually sets currSelIdentity = nextTarget
 
-        for (i = 0; i < gBattlersCount; i++)
+        for (i = 0; i < 6; i++)
         {
             if (currSelIdentity == identities[i])
                 break;
@@ -380,10 +380,15 @@ static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir)
         {
             i += dir;
             if (i < 0)
-                i = gBattlersCount - 1;
-            else if (i >= gBattlersCount)
+                i = 5;
+            else if (i >= 6)
                 i = 0;
-            nextTarget = GetBattlerAtPosition(identities[i]);
+            nextTarget = identities[i];
+            if (IsDoubleBattle()){
+                if (nextTarget==5 || nextTarget==4) nextTarget = 3;
+            }
+            else 
+            nextTarget = GetBattlerAtPosition(nextTarget);
         } while (nextTarget == gBattlersCount);
     } while (!IsValidTarget(nextTarget));
 
