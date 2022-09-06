@@ -965,19 +965,19 @@ void PrepareStringBattle(u16 stringId, u8 battler)
 void ResetSentPokesToOpponentValue(void)
 {
     s32 i;
-    u8 numBattlers;
+    // u8 numBattlers;
     u32 bits = 0;
 
     gSentPokesToOpponent[0] = 0;
     gSentPokesToOpponent[1] = 0;
 
     // for (i = 0; i < gBattlersCount; i += 2)
-    numBattlers = gBattlersCount;
-    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && DoubleBattleNonMulti()) numBattlers=2;
-    else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
+    // numBattlers = gBattlersCount;
+    // if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && DoubleBattleNonMulti()) numBattlers=2;
+    // else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
 
-    for (i=0; i < numBattlers; i+=2)
-        bits |= gBitTable[gBattlerPartyIndexes[i]];
+    // for (i=0; i < numBattlers; i+=2)
+    bits |= gBitTable[gBattlerPartyIndexes[i]];
 
     for (i = 1; i < gBattlersCount; i += 2)
         gSentPokesToOpponent[(i & BIT_FLANK) >> 1] = bits;
@@ -986,23 +986,23 @@ void ResetSentPokesToOpponentValue(void)
 void OpponentSwitchInResetSentPokesToOpponentValue(u8 battler)
 {
     s32 i = 0;
-    u8 numBattlers;
+    // u8 numBattlers;
     u32 bits = 0;
 
-    numBattlers = gBattlersCount;
-    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && DoubleBattleNonMulti()) numBattlers=2;
-    else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
+    // numBattlers = gBattlersCount;
+    // if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && DoubleBattleNonMulti()) numBattlers=2;
+    // else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE) numBattlers=3;
 
     if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
     {
         u8 flank = ((battler & BIT_FLANK) >> 1);
         gSentPokesToOpponent[flank] = 0;
 
-        for (i = 0; i < numBattlers; i += 2)
-        {
-            if (!(gAbsentBattlerFlags & gBitTable[i]))
-                bits |= gBitTable[gBattlerPartyIndexes[i]];
-        }
+        // for (i = 0; i < numBattlers; i += 2)
+        // {
+        if (!(gAbsentBattlerFlags & gBitTable[i]))
+            bits |= gBitTable[gBattlerPartyIndexes[i]];
+        // }
         gSentPokesToOpponent[flank] = bits;
     }
 }
@@ -1968,7 +1968,7 @@ bool8 HandleFaintedMonActions(void)
             gBattleStruct->faintedActionsState++;
             for (i = 0; i < gBattlersCount; i++)
             {
-                if ((DoubleBattleNonMulti() && GetBattlerPosition(i) == B_POSITION_PLAYER_RIGHT) ||
+                if ((DoubleBattleNonMulti() && GetBattlerPosition(i) == B_POSITION_PLAYER_MIDDLE) ||
                     (IsTripleBattle() && (GetBattlerPosition(i) == B_POSITION_PLAYER_RIGHT || GetBattlerPosition(i) == B_POSITION_PLAYER_MIDDLE)))
                     continue;
                 if (gAbsentBattlerFlags & gBitTable[i] && !HasNoMonsToSwitch(i, PARTY_SIZE, PARTY_SIZE))

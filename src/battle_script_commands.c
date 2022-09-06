@@ -4443,7 +4443,7 @@ static void Cmd_moveend(void)
                     battlerId = BATTLER_TO_RIGHT(battlerId);
                 }
 
-                if (battlerId != gBattlerOriginalTarget)
+                if (battlerId != gBattlerOriginalTarget && (gBattlerPositions[battlerId]!=B_POSITION_PLAYER_MIDDLE && gBattlerPositions[battlerId]!=B_POSITION_PLAYER_RIGHT))
                 {
                     gBattlerTarget = battlerId;
                     gBattleScripting.moveendState = 0;
